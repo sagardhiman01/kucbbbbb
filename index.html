@@ -1,0 +1,1593 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Milk Bar — Pure Veg | Roorkee's Finest</title>
+  <meta name="description" content="Milk Bar Roorkee — 100% Pure Veg restaurant. Pizza, Bakery, Sweets, Cakes, South Indian & more. 4.2★ rated. No packaging charges."/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800;900&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{
+      --gold:#C9A84C;
+      --gold-light:#E8C96A;
+      --gold-pale:#FAF0D7;
+      --gold-dark:#8B6914;
+      --bg-page:linear-gradient(135deg, #FFFDF9 0%, #FAF0D7 100%);
+      --bg-card:#FFFDF9;
+      --text-main:#2A1A05;
+      --text-sub:#5A4525;
+      --border:rgba(201,168,76,0.3);
+      --green:#118c4f;
+      --green-glow:#22c55e;
+      --font-head:'Playfair Display',serif;
+      --font:'Inter',system-ui,sans-serif;
+    }
+    html{scroll-behavior:smooth}
+    body{font-family:var(--font);background:var(--bg-page);color:var(--text-main);overflow-x:hidden}
+
+    /* ── SVG ICONS ── */
+    .lucide {
+      width: 1.25rem;
+      height: 1.25rem;
+      stroke-width: 2px;
+      stroke: currentColor;
+      display: inline-block;
+      vertical-align: middle;
+      transition: transform 0.3s;
+    }
+
+    /* ── CANVAS BG ── */
+    #bg-canvas{position:fixed;top:0;left:0;width:100vw;height:100vh;z-index:0;pointer-events:none}
+
+    /* ── ANIMATED ICONS KEYFRAMES ── */
+    @keyframes spin{from{transform:rotate(0)}to{transform:rotate(360deg)}}
+    @keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+    @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.15)}}
+    @keyframes wiggle{0%,100%{transform:rotate(0)}25%{transform:rotate(-12deg)}75%{transform:rotate(12deg)}}
+    @keyframes float{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-10px) rotate(5deg)}}
+    @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
+    @keyframes flip{0%,100%{transform:rotateY(0)}50%{transform:rotateY(180deg)}}
+    @keyframes swing{0%,100%{transform:rotate(-10deg)}50%{transform:rotate(10deg)}}
+    @keyframes heartbeat{0%,100%{transform:scale(1)}14%{transform:scale(1.2)}28%{transform:scale(1)}42%{transform:scale(1.2)}70%{transform:scale(1)}}
+    @keyframes sparkle{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.5;transform:scale(0.8)}}
+    @keyframes glow-pulse{0%,100%{filter:drop-shadow(0 0 4px var(--gold))}50%{filter:drop-shadow(0 0 12px var(--gold-light))}}
+    @keyframes slide-lr{0%,100%{transform:translateX(0)}50%{transform:translateX(6px)}}
+
+    .icon-spin{animation:spin 3s linear infinite}
+    .icon-bounce{animation:bounce 1.5s ease-in-out infinite}
+    .icon-pulse{animation:pulse 1.8s ease-in-out infinite}
+    .icon-wiggle{animation:wiggle 1s ease-in-out infinite}
+    .icon-float{animation:float 3s ease-in-out infinite}
+    .icon-shake{animation:shake 0.8s ease-in-out infinite}
+    .icon-swing{animation:swing 1.5s ease-in-out infinite;transform-origin:top center}
+    .icon-heartbeat{animation:heartbeat 1.5s ease-in-out infinite}
+    .icon-sparkle{animation:sparkle 2s ease-in-out infinite}
+    .icon-glow{animation:glow-pulse 2s ease-in-out infinite}
+    .icon-slide{animation:slide-lr 1.5s ease-in-out infinite}
+
+    /* ── SCROLLBAR ── */
+    ::-webkit-scrollbar{width:6px}
+    ::-webkit-scrollbar-track{background:#FAF0D7}
+    ::-webkit-scrollbar-thumb{background:var(--gold);border-radius:3px}
+
+    /* ── NAV ── */
+    nav{
+      position:fixed;top:0;left:0;right:0;z-index:100;
+      display:flex;justify-content:space-between;align-items:center;
+      padding:1rem 3rem;
+      background:rgba(255,253,249,0.92);
+      backdrop-filter:blur(20px);
+      border-bottom:1px solid var(--border);
+    }
+    .nav-logo{
+      font-family:var(--font-head);
+      font-size:1.8rem;font-weight:900;
+      background:linear-gradient(135deg,var(--gold-dark),var(--gold),var(--gold-light));
+      -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+      letter-spacing:1px;
+    }
+    .nav-links{display:flex;gap:2rem;align-items:center}
+    .nav-links a{color:var(--text-sub);text-decoration:none;font-size:0.9rem;font-weight:600;transition:color 0.2s}
+    .nav-links a:hover{color:var(--gold-dark)}
+    .nav-badge{
+      display:flex;align-items:center;gap:0.5rem;
+      background:rgba(17,140,79,0.1);border:1px solid rgba(17,140,79,0.4);
+      color:#118c4f;padding:0.3rem 0.9rem;border-radius:999px;font-size:0.8rem;font-weight:600;
+    }
+    .veg-dot{
+      width:10px;height:10px;border-radius:50%;background:#118c4f;
+      box-shadow:0 0 8px #118c4f;animation:pulse 2s infinite;
+    }
+    .nav-instagram-link{
+      display:flex;align-items:center;gap:0.5rem;
+      background:linear-gradient(135deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888);
+      color:white;padding:0.35rem 0.9rem;border-radius:999px;
+      font-size:0.8rem;font-weight:600;text-decoration:none;
+      transition:transform 0.2s,box-shadow 0.2s;
+    }
+    .nav-instagram-link:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(220,39,67,0.4)}
+
+    /* ── HERO ── */
+    .hero{
+      position:relative;z-index:10;min-height:100vh;
+      display:flex;align-items:center;padding:8rem 3rem 4rem;gap:4rem;
+    }
+    .hero-text{flex:1;max-width:580px}
+    .hero-tag{
+      display:inline-flex;align-items:center;gap:0.6rem;
+      border:1px solid rgba(201,168,76,0.45);
+      background:rgba(201,168,76,0.15);
+      color:var(--gold-dark);padding:0.4rem 1.1rem;
+      border-radius:999px;font-size:0.8rem;font-weight:700;
+      letter-spacing:1px;text-transform:uppercase;margin-bottom:1.5rem;
+    }
+    .hero h1{
+      font-family:var(--font-head);
+      font-size:clamp(3rem,6vw,5.5rem);font-weight:900;
+      line-height:1.05;letter-spacing:-1px;margin-bottom:1.5rem;
+    }
+    .hero h1 span{
+      background:linear-gradient(135deg,var(--gold-dark) 0%,var(--gold) 50%,#E8A820 100%);
+      -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+    }
+    .hero p{font-size:1.1rem;color:var(--text-sub);line-height:1.8;margin-bottom:2.5rem}
+
+    .hero-stats{display:flex;gap:2.5rem;margin-bottom:2.5rem;flex-wrap:wrap}
+    .stat-item{display:flex;flex-direction:column}
+    .stat-val{
+      font-family:var(--font-head);font-size:1.9rem;font-weight:800;
+      background:linear-gradient(135deg,var(--gold-dark),var(--gold));
+      -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+    }
+    .stat-label{font-size:0.78rem;color:var(--text-sub);margin-top:0.2rem;text-transform:uppercase;letter-spacing:0.5px}
+
+    .hero-btns{display:flex;gap:1rem;flex-wrap:wrap}
+    .btn-gold{
+      padding:0.9rem 2rem;
+      background:linear-gradient(135deg,var(--gold-light),var(--gold));
+      color:#2A1A05;border:none;border-radius:12px;
+      font-size:1rem;font-weight:700;cursor:pointer;
+      transition:all 0.3s;text-decoration:none;display:inline-flex;align-items:center;gap:0.5rem;
+      box-shadow:0 6px 20px rgba(201,168,76,0.2);
+    }
+    .btn-gold:hover{transform:translateY(-3px);box-shadow:0 15px 35px rgba(201,168,76,0.35)}
+    .btn-outline{
+      padding:0.9rem 2rem;background:transparent;color:var(--gold-dark);
+      border:1px solid rgba(201,168,76,0.5);border-radius:12px;
+      font-size:1rem;font-weight:600;cursor:pointer;
+      transition:all 0.3s;text-decoration:none;display:inline-flex;align-items:center;gap:0.5rem;
+    }
+    .btn-outline:hover{background:rgba(201,168,76,0.1);border-color:var(--gold-dark);transform:translateY(-2px)}
+
+    /* ── HERO IMAGE ── */
+    .hero-image-wrap{flex:1;display:flex;justify-content:center;align-items:center;position:relative}
+    .hero-img-outer{position:relative;width:440px;height:440px;animation:float 6s ease-in-out infinite}
+    .hero-img-ring{
+      position:absolute;inset:-24px;border-radius:50%;
+      border:1px solid rgba(201,168,76,0.35);animation:spin 25s linear infinite;
+    }
+    .hero-img-ring::before{
+      content:'';position:absolute;top:-5px;left:50%;
+      width:14px;height:14px;background:var(--gold-dark);border-radius:50%;
+      box-shadow:0 0 20px var(--gold-light);transform:translateX(-50%);
+    }
+    .hero-img-ring2{
+      position:absolute;inset:-50px;border-radius:50%;
+      border:1px solid rgba(201,168,76,0.2);animation:spin 40s linear infinite reverse;
+    }
+    .hero-img-ring2::after{
+      content:'★';position:absolute;top:0;left:50%;
+      color:var(--gold-dark);font-size:1rem;transform:translateX(-50%);
+    }
+    .hero-img{
+      width:100%;height:100%;object-fit:cover;border-radius:50%;
+      border:3px solid rgba(201,168,76,0.4);
+      box-shadow:0 0 80px rgba(201,168,76,0.15),0 30px 80px rgba(42,26,5,0.15);
+    }
+    .badge-float{
+      position:absolute;background:rgba(255,253,249,0.92);
+      border:1px solid rgba(201,168,76,0.35);backdrop-filter:blur(20px);
+      border-radius:16px;padding:0.7rem 1.2rem;
+      display:flex;align-items:center;gap:0.6rem;
+      font-size:0.85rem;font-weight:700;white-space:nowrap;
+      color:var(--text-main);
+      box-shadow:0 8px 32px rgba(42,26,5,0.08);
+    }
+    .badge-float:nth-child(1){top:-20px;left:-80px;animation:bounce 4s ease-in-out infinite}
+    .badge-float:nth-child(2){bottom:30px;right:-80px;animation:bounce 4s ease-in-out infinite 2s}
+    .badge-float:nth-child(3){bottom:-20px;left:-20px;animation:bounce 4s ease-in-out infinite 1s}
+
+    /* ── INFO STRIP ── */
+    .info-strip{
+      position:relative;z-index:10;margin:0 3rem 5rem;
+      background:rgba(201,168,76,0.12);
+      border:1px solid rgba(201,168,76,0.3);border-radius:20px;
+      padding:1.5rem 2.5rem;
+      display:flex;justify-content:space-around;align-items:center;flex-wrap:wrap;gap:1.5rem;
+      box-shadow:0 8px 30px rgba(201,168,76,0.05);
+    }
+    .info-item{display:flex;align-items:center;gap:0.8rem;font-size:0.9rem}
+    .info-icon-wrap{
+      width:48px;height:48px;border-radius:12px;
+      background:rgba(201,168,76,0.2);border:1px solid rgba(201,168,76,0.35);
+      display:flex;align-items:center;justify-content:center;font-size:1.4rem;
+    }
+    .info-text strong{display:block;font-weight:700;color:var(--text-main)}
+    .info-text span{color:var(--text-sub);font-size:0.8rem}
+
+    /* ── SECTION COMMON ── */
+    .section{position:relative;z-index:10;padding:5rem 3rem}
+    .section-header{text-align:center;margin-bottom:4rem}
+    .section-tag{
+      display:inline-block;color:var(--gold-dark);
+      font-size:0.78rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;margin-bottom:1rem;
+    }
+    .section-header h2{
+      font-family:var(--font-head);
+      font-size:clamp(2rem,4vw,3.5rem);font-weight:800;letter-spacing:-1px;margin-bottom:1rem;
+    }
+    .section-header p{color:var(--text-sub);max-width:500px;margin:0 auto;line-height:1.7}
+
+    /* ── MENU GRID ── */
+    .menu-grid{
+      display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1.5rem;
+    }
+    .menu-card{
+      background:var(--bg-card);border:1px solid var(--border);
+      border-radius:20px;overflow:hidden;cursor:pointer;
+      transition:all 0.4s cubic-bezier(0.175,0.885,0.32,1.275);
+      transform-style:preserve-3d;position:relative;
+      box-shadow:0 8px 30px rgba(42,26,5,0.05);
+    }
+    .menu-card::after{
+      content:'';position:absolute;top:0;left:0;right:0;height:2px;
+      background:linear-gradient(90deg,transparent,var(--gold),transparent);
+      opacity:0;transition:opacity 0.3s;
+    }
+    .menu-card:hover{
+      border-color:rgba(201,168,76,0.5);
+      box-shadow:0 20px 40px rgba(201,168,76,0.15),0 0 40px rgba(201,168,76,0.05);
+      transform:translateY(-10px);
+    }
+    .menu-card:hover::after{opacity:1}
+
+    .menu-card-img{
+      width:100%;height:180px;object-fit:cover;
+      transition:transform 0.5s ease;display:block;
+    }
+    .menu-card:hover .menu-card-img{transform:scale(1.08)}
+
+    .menu-card-body{padding:1.4rem 1.5rem}
+    .menu-card-icon{
+      width: 2.2rem;
+      height: 2.2rem;
+      stroke-width: 1.8px;
+      color: var(--gold-dark);
+      margin-bottom: 0.6rem;
+      display: inline-block;
+    }
+    .menu-card-name{
+      font-size:1.1rem;font-weight:700;margin-bottom:0.4rem;color:var(--text-main);
+    }
+    .menu-card-desc{font-size:0.82rem;color:var(--text-sub);line-height:1.5}
+    .menu-card-footer{
+      display:flex;justify-content:flex-end;align-items:center;
+      margin-top:1rem;padding-top:0.8rem;
+      border-top:1px solid rgba(201,168,76,0.12);
+    }
+    .menu-card-btn{
+      background:transparent;border:1px solid rgba(201,168,76,0.4);
+      color:var(--gold-dark);padding:0.35rem 0.9rem;border-radius:999px;
+      font-size:0.78rem;font-weight:700;cursor:pointer;
+      transition:all 0.2s;
+    }
+    .menu-card:hover .menu-card-btn{background:var(--gold);color:#2A1A05;border-color:var(--gold)}
+
+    /* ── INSTAGRAM FEED SECTION ── */
+    .insta-section{position:relative;z-index:10;padding:4rem 3rem}
+    .insta-grid{
+      display:grid;grid-template-columns:repeat(3,1fr);gap:0.5rem;
+      border-radius:20px;overflow:hidden;
+    }
+    .insta-item{
+      position:relative;overflow:hidden;aspect-ratio:1;cursor:pointer;
+    }
+    .insta-item img{
+      width:100%;height:100%;object-fit:cover;
+      transition:transform 0.4s,filter 0.4s;
+    }
+    .insta-item:hover img{transform:scale(1.08);filter:brightness(0.7)}
+    .insta-overlay{
+      position:absolute;inset:0;
+      background:linear-gradient(135deg,rgba(201,168,76,0.6),rgba(0,0,0,0.4));
+      display:flex;align-items:center;justify-content:center;flex-direction:column;gap:0.3rem;
+      opacity:0;transition:opacity 0.3s;color:white;font-weight:700;font-size:0.9rem;
+    }
+    .insta-item:hover .insta-overlay{opacity:1}
+    .insta-hearts{font-size:1.5rem}
+
+    /* ── SPECIALS ── */
+    .specials-grid{display:grid;grid-template-columns:1.3fr 1fr;gap:1.5rem}
+    .special-big{
+      background:var(--bg-card);border:1px solid var(--border);
+      border-radius:24px;overflow:hidden;cursor:pointer;transition:all 0.4s;
+      box-shadow:0 8px 30px rgba(42,26,5,0.05);
+    }
+    .special-big:hover{border-color:rgba(201,168,76,0.45);transform:translateY(-6px);box-shadow:0 20px 40px rgba(201,168,76,0.15)}
+    .special-big img{width:100%;height:280px;object-fit:cover;display:block}
+    .special-body{padding:1.8rem 2rem}
+    .special-badge{
+      display:inline-block;background:rgba(201,168,76,0.15);color:var(--gold-dark);
+      border:1px solid rgba(201,168,76,0.3);padding:0.2rem 0.8rem;
+      border-radius:999px;font-size:0.75rem;font-weight:700;text-transform:uppercase;margin-bottom:0.8rem;
+    }
+    .special-title{font-family:var(--font-head);font-size:1.6rem;font-weight:800;margin-bottom:0.5rem;color:var(--text-main)}
+    .special-desc{color:var(--text-sub);font-size:0.9rem;line-height:1.6}
+
+    .special-col{display:flex;flex-direction:column;gap:1.5rem}
+    .special-sm{
+      flex:1;background:var(--bg-card);border:1px solid var(--border);
+      border-radius:20px;overflow:hidden;cursor:pointer;
+      transition:all 0.3s;display:flex;align-items:center;gap:0;
+      box-shadow:0 8px 30px rgba(42,26,5,0.05);
+    }
+    .special-sm:hover{border-color:rgba(201,168,76,0.45);transform:translateX(6px);box-shadow:0 15px 30px rgba(201,168,76,0.1)}
+    .special-sm img{width:110px;height:100%;object-fit:cover;flex-shrink:0;display:block}
+    .special-sm-body{padding:1.2rem;flex:1}
+    .special-sm-icon{
+      width: 1.8rem;
+      height: 1.8rem;
+      stroke-width: 1.8px;
+      color: var(--gold-dark);
+      margin-bottom: 0.4rem;
+      display: block;
+    }
+    .special-sm-body h3{font-size:1rem;font-weight:700;margin-bottom:0.3rem;color:var(--text-main)}
+    .special-sm-body p{font-size:0.8rem;color:var(--text-sub);line-height:1.5}
+
+    /* ── ANIMATED ICON DISPLAY SECTION ── */
+    .icons-showcase{position:relative;z-index:10;padding:4rem 3rem}
+    .icons-grid{
+      display:grid;grid-template-columns:repeat(auto-fill,minmax(80px,1fr));gap:1.5rem;
+    }
+    .icon-box{
+      background:var(--bg-card);border:1px solid var(--border);
+      border-radius:16px;padding:1.2rem 0.8rem;
+      display:flex;flex-direction:column;align-items:center;gap:0.5rem;
+      cursor:pointer;transition:all 0.3s;
+      box-shadow:0 6px 20px rgba(42,26,5,0.04);
+    }
+    .icon-box:hover{
+      background:rgba(201,168,76,0.1);border-color:rgba(201,168,76,0.45);
+      transform:translateY(-6px);box-shadow:0 15px 30px rgba(201,168,76,0.12);
+    }
+    .icon-box i, .icon-box .lucide{
+      width: 1.8rem;
+      height: 1.8rem;
+      stroke-width: 1.8px;
+      color: var(--gold-dark);
+      display: block;
+      margin: 0 auto;
+    }
+    .icon-box span{font-size:0.65rem;color:var(--text-sub);text-align:center;line-height:1.3}
+
+    /* ── TESTIMONIALS ── */
+    .reviews-section{position:relative;z-index:10;padding:4rem 3rem}
+    .reviews-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1.5rem}
+    .review-card{
+      background:var(--bg-card);border:1px solid var(--border);
+      border-radius:20px;padding:1.8rem;position:relative;
+      box-shadow:0 8px 30px rgba(42,26,5,0.04);
+      transition:all 0.3s;
+    }
+    .review-card:hover{
+      transform:translateY(-5px);
+      box-shadow:0 15px 30px rgba(201,168,76,0.1);
+      border-color:rgba(201,168,76,0.45);
+    }
+    .review-stars{color:var(--gold-dark);display:flex;gap:0.25rem;margin-bottom:1rem}
+    .review-text{color:var(--text-sub);font-size:0.9rem;line-height:1.7;margin-bottom:1.2rem;font-style:italic}
+    .review-author{display:flex;align-items:center;gap:0.8rem}
+    .review-avatar{
+      width:40px;height:40px;border-radius:50%;
+      background:linear-gradient(135deg,var(--gold-dark),var(--gold));
+      display:flex;align-items:center;justify-content:center;
+      font-weight:700;font-size:0.9rem;color:white;
+    }
+    .review-name{font-weight:600;font-size:0.9rem;color:var(--text-main)}
+    .review-via{font-size:0.75rem;color:var(--text-sub)}
+
+    /* ── WHY US ── */
+    .why-section{position:relative;z-index:10;padding:4rem 3rem}
+    .why-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:1.5rem}
+    .why-card{
+      background:var(--bg-card);border:1px solid var(--border);
+      border-radius:20px;padding:2rem;text-align:center;
+      transition:all 0.3s;
+      box-shadow:0 8px 30px rgba(42,26,5,0.04);
+    }
+    .why-card:hover{border-color:rgba(201,168,76,0.45);transform:translateY(-8px);box-shadow:0 15px 30px rgba(201,168,76,0.1)}
+    .why-icon{width:2.5rem;height:2.5rem;stroke-width:1.8px;color:var(--gold-dark);margin:0 auto 1rem;display:block}
+    .why-title{font-size:1.1rem;font-weight:700;margin-bottom:0.5rem;color:var(--gold-dark)}
+    .why-text{font-size:0.85rem;color:var(--text-sub);line-height:1.6}
+
+    /* ── MENU TABS & DISHES ── */
+    .menu-tabs{
+      display:flex;justify-content:center;gap:0.8rem;margin-bottom:3rem;flex-wrap:wrap;
+    }
+    .tab-btn{
+      padding:0.7rem 1.4rem;border:1px solid rgba(201,168,76,0.3);background:var(--bg-card);
+      color:var(--text-main);border-radius:999px;font-size:0.9rem;font-weight:600;cursor:pointer;
+      transition:all 0.3s;display:flex;align-items:center;gap:0.5rem;
+    }
+    .tab-btn:hover{
+      border-color:var(--gold);background:rgba(201,168,76,0.1);
+    }
+    .tab-btn.active{
+      background:linear-gradient(135deg, var(--gold-light), var(--gold));
+      color:#2A1A05;border-color:var(--gold);box-shadow:0 6px 15px rgba(201,168,76,0.25);
+    }
+    .dish-grid{
+      display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1.5rem;
+      min-height:350px;
+    }
+    .dish-card{
+      background:var(--bg-card);border:1px solid var(--border);border-radius:20px;
+      overflow:hidden;transition:all 0.3s;box-shadow:0 8px 30px rgba(42,26,5,0.04);
+      display:none;
+      opacity:0;transform:translateY(15px);
+    }
+    .dish-card.show{
+      display:block;animation:fade-in-up 0.5s forwards;
+    }
+    @keyframes fade-in-up{
+      to{opacity:1;transform:translateY(0)}
+    }
+    .dish-card:hover{
+      border-color:var(--gold);transform:translateY(-8px);
+      box-shadow:0 15px 35px rgba(201,168,76,0.12);
+    }
+    .dish-img-wrap{
+      position:relative;width:100%;height:180px;overflow:hidden;
+    }
+    .dish-img{
+      width:100%;height:100%;object-fit:cover;transition:transform 0.4s;
+    }
+    .dish-card:hover .dish-img{transform:scale(1.06)}
+    .dish-veg-badge{
+      position:absolute;top:12px;left:12px;
+      width:18px;height:18px;border:2px solid #118c4f;background:white;
+      display:flex;align-items:center;justify-content:center;border-radius:2px;
+      z-index:2;
+    }
+    .dish-veg-dot{
+      width:8px;height:8px;background:#118c4f;border-radius:50%;
+    }
+    .dish-body{padding:1.2rem}
+    .dish-name{font-size:1.1rem;font-weight:700;color:var(--text-main);margin-bottom:0.4rem}
+    .dish-desc{font-size:0.8rem;color:var(--text-sub);line-height:1.5;margin-bottom:1rem;height:45px;overflow:hidden}
+    .dish-footer{
+      display:flex;justify-content:space-between;align-items:center;
+      border-top:1px solid rgba(201,168,76,0.12);padding-top:0.8rem;margin-top:0.5rem;
+    }
+    .dish-price{font-size:1.1rem;font-weight:800;color:var(--gold-dark)}
+    .dish-btn{
+      padding:0.4rem 1rem;border-radius:999px;border:1px solid rgba(201,168,76,0.4);
+      background:transparent;color:var(--gold-dark);font-size:0.8rem;font-weight:700;cursor:pointer;
+      transition:all 0.2s;
+    }
+    .dish-btn:hover{
+      background:var(--gold);color:#2A1A05;border-color:var(--gold);
+    }
+
+    /* ── FOOTER ── */
+    footer{
+      position:relative;z-index:10;
+      background:#FAF0D7;border-top:1px solid var(--border);
+      padding:3rem;
+    }
+    .foot-top{
+      display:grid;grid-template-columns:1.5fr 1fr 1fr;gap:3rem;margin-bottom:3rem;
+    }
+    .foot-brand{}
+    .foot-logo{
+      font-family:var(--font-head);font-size:2rem;font-weight:900;
+      background:linear-gradient(135deg,var(--gold-dark),var(--gold));
+      -webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:1rem;display:block;
+    }
+    .foot-brand p{color:var(--text-sub);font-size:0.9rem;line-height:1.7;max-width:300px}
+    .foot-social{display:flex;gap:0.8rem;margin-top:1.5rem}
+    .social-btn{
+      width:42px;height:42px;border-radius:10px;
+      display:flex;align-items:center;justify-content:center;font-size:1.2rem;
+      border:1px solid rgba(201,168,76,0.4);background:rgba(201,168,76,0.12);
+      cursor:pointer;transition:all 0.3s;text-decoration:none;
+    }
+    .social-btn:hover{transform:translateY(-3px)}
+    .social-btn.insta{background:linear-gradient(135deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888)}
+    .social-btn.insta:hover{box-shadow:0 8px 20px rgba(220,39,67,0.5)}
+    .social-btn.swiggy{background:#FC8019}
+    .social-btn.zomato{background:#E23744}
+
+    .foot-col h4{font-size:0.9rem;font-weight:700;color:var(--gold-dark);text-transform:uppercase;letter-spacing:1px;margin-bottom:1.2rem}
+    .foot-col ul{list-style:none}
+    .foot-col li{margin-bottom:0.7rem}
+    .foot-col a{color:var(--text-sub);text-decoration:none;font-size:0.9rem;transition:color 0.2s}
+    .foot-col a:hover{color:var(--gold-dark)}
+
+    .foot-bottom{
+      border-top:1px solid rgba(201,168,76,0.2);padding-top:2rem;
+      display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;
+    }
+    .foot-bottom p{color:var(--text-sub);font-size:0.8rem}
+    .insta-cta{
+      display:inline-flex;align-items:center;gap:0.5rem;
+      background:linear-gradient(135deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888);
+      color:white;padding:0.5rem 1.2rem;border-radius:999px;
+      font-size:0.85rem;font-weight:600;text-decoration:none;
+      transition:all 0.3s;box-shadow:0 4px 15px rgba(220,39,67,0.3);
+    }
+    .insta-cta:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(220,39,67,0.5)}
+
+    /* ── FADE-IN ── */
+    .fade-in{opacity:0;transform:translateY(30px);transition:all 0.7s ease}
+    .fade-in.visible{opacity:1;transform:translateY(0)}
+
+    /* ── DIVIDER ── */
+    .gold-divider{
+      position:relative;z-index:10;
+      display:flex;align-items:center;gap:1rem;padding:0 3rem 2rem;
+    }
+    .gold-divider::before,.gold-divider::after{
+      content:'';flex:1;height:1px;
+      background:linear-gradient(90deg,transparent,rgba(201,168,76,0.4),transparent);
+    }
+    .gold-divider span{color:var(--gold);font-size:1.2rem}
+
+    /* Bottom Mobile Nav styles (hidden by default on desktop) */
+    .mobile-nav{
+      display:none;
+      position:fixed;bottom:1rem;left:1rem;right:1rem;
+      background:rgba(255,253,249,0.94);
+      backdrop-filter:blur(20px);
+      border:1px solid var(--border);
+      border-radius:24px;
+      padding:0.75rem 0.5rem;
+      box-shadow:0 10px 35px rgba(42,26,5,0.15);
+      z-index:999;
+      justify-content:space-around;
+      align-items:center;
+    }
+    .mobile-nav-link{
+      display:flex;flex-direction:column;align-items:center;
+      color:var(--text-sub);text-decoration:none;
+      font-size:0.68rem;font-weight:700;gap:0.2rem;
+      transition:all 0.2s;
+    }
+    .mobile-nav-link i, .mobile-nav-link .lucide{
+      width:1.25rem;height:1.25rem;color:var(--gold-dark);
+      transition:transform 0.2s;
+    }
+    .mobile-nav-link:hover, .mobile-nav-link.active{
+      color:var(--gold-dark);
+      transform:scale(1.05);
+    }
+
+    @media(max-width:900px){
+      nav{padding:1rem 1.5rem}
+      .nav-links{display:none}
+      .mobile-nav{display:flex}
+      .hero{flex-direction:column;padding:7rem 1.5rem 3rem;gap:3rem}
+      .hero-img-outer{width:280px;height:280px}
+      .badge-float{font-size:0.7rem;padding:0.4rem 0.8rem;border-radius:12px}
+      .badge-float:nth-child(1){top:-10px;left:-20px}
+      .badge-float:nth-child(2){bottom:10px;right:-20px}
+      .badge-float:nth-child(3){bottom:-20px;left:10px}
+      .section,.insta-section,.reviews-section,.why-section,.icons-showcase,.specials-section{padding:3rem 1.5rem 4rem} /* extra bottom padding so bottom nav doesn't cover content */
+      .info-strip{margin:0 1.5rem 3rem}
+      .specials-grid{grid-template-columns:1fr}
+      .special-big img{height:200px}
+      .insta-grid{grid-template-columns:repeat(2,1fr)}
+      .foot-top{grid-template-columns:1fr;gap:2rem}
+      footer{padding:2rem 1.5rem 6rem} /* extra padding to clear mobile nav */
+      .menu-tabs{
+        justify-content:flex-start;
+        overflow-x:auto;
+        white-space:nowrap;
+        padding:0.2rem 0.5rem 1rem;
+        margin-bottom:1.5rem;
+        -webkit-overflow-scrolling:touch;
+      }
+      .tab-btn{flex-shrink:0}
+    }
+  </style>
+</head>
+<body>
+
+<canvas id="bg-canvas"></canvas>
+
+<!-- ─── MOBILE BOTTOM NAV ─── -->
+<div class="mobile-nav">
+  <a href="#menu" class="mobile-nav-link"><i data-lucide="menu"></i><span>Menu</span></a>
+  <a href="#dishes-menu" class="mobile-nav-link"><i data-lucide="flame"></i><span>Popular</span></a>
+  <a href="#specials" class="mobile-nav-link"><i data-lucide="sparkles"></i><span>Specials</span></a>
+  <a href="#gallery" class="mobile-nav-link"><i data-lucide="instagram"></i><span>Instagram</span></a>
+  <a href="#reviews" class="mobile-nav-link"><i data-lucide="message-square"></i><span>Reviews</span></a>
+</div>
+
+<!-- ─── NAV ─── -->
+<nav>
+  <div class="nav-logo">Milk Bar</div>
+  <div class="nav-links">
+    <a href="#menu"><i data-lucide="menu" class="icon-bounce" style="margin-right:0.25rem;"></i>Menu</a>
+    <a href="#dishes-menu"><i data-lucide="flame" class="icon-float" style="margin-right:0.25rem;"></i>Popular</a>
+    <a href="#specials"><i data-lucide="sparkles" class="icon-sparkle" style="margin-right:0.25rem;"></i>Specials</a>
+    <a href="#gallery"><i data-lucide="instagram" class="icon-wiggle" style="margin-right:0.25rem;"></i>Gallery</a>
+    <a href="#reviews"><i data-lucide="message-square" class="icon-pulse" style="margin-right:0.25rem;"></i>Reviews</a>
+    <div class="nav-badge"><div class="veg-dot"></div>Pure Veg</div>
+  </div>
+  <a href="https://www.instagram.com/milkbar.in?igsh=YnF3NW05cGRjYmVl" target="_blank" class="nav-instagram-link">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="white"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+    @milkbar.in
+  </a>
+</nav>
+
+<!-- ─── HERO ─── -->
+<section class="hero">
+  <div class="hero-text fade-in">
+    <div class="hero-tag"><i data-lucide="award" class="icon-sparkle" style="margin-right:0.25rem;"></i> Est. in Roorkee · Pure Veg</div>
+    <h1>Roorkee's Most<br/><span>Loved Milk Bar</span></h1>
+    <p>From crispy pizzas & golden bakery to authentic South Indian & special cakes — every bite crafted with love and pure vegetarian goodness. Come taste the difference!</p>
+    <div class="hero-stats">
+      <div class="stat-item"><span class="stat-val" style="display:flex;align-items:center;gap:0.25rem;">4.2 <i data-lucide="star" style="fill:currentColor;width:1.2rem;height:1.2rem;"></i></span><span class="stat-label">Rating</span></div>
+      <div class="stat-item"><span class="stat-val">39.8K</span><span class="stat-label">Happy Reviews</span></div>
+      <div class="stat-item"><span class="stat-val">200+</span><span class="stat-label">Menu Items</span></div>
+      <div class="stat-item"><span class="stat-val">₹0</span><span class="stat-label">Packaging Fee</span></div>
+    </div>
+    <div class="hero-btns">
+      <a href="#menu" class="btn-gold"><i data-lucide="menu" class="icon-wiggle" style="margin-right:0.5rem;"></i> Explore Menu</a>
+      <a href="https://www.instagram.com/milkbar.in?igsh=YnF3NW05cGRjYmVl" target="_blank" class="btn-outline">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+        Follow on Instagram
+      </a>
+    </div>
+  </div>
+
+  <div class="hero-image-wrap fade-in">
+    <div class="hero-img-outer">
+      <div class="hero-img-ring"></div>
+      <div class="hero-img-ring2"></div>
+      <img src="/hero.png" alt="Milk Bar Food" class="hero-img"/>
+      <div class="hero-img-badges">
+        <div class="badge-float"><i data-lucide="rotate-ccw" class="icon-bounce" style="margin-right:0.25rem;"></i><span>Frequently Reordered</span></div>
+        <div class="badge-float"><i data-lucide="sprout" class="icon-heartbeat" style="margin-right:0.25rem;"></i><span>100% Pure Veg</span></div>
+        <div class="badge-float"><i data-lucide="star" class="icon-glow" style="margin-right:0.25rem;fill:currentColor;"></i><span>4.2 Star Rated</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- INFO STRIP -->
+<div class="info-strip fade-in">
+  <div class="info-item">
+    <div class="info-icon-wrap"><i data-lucide="map-pin" class="icon-bounce"></i></div>
+    <div class="info-text"><strong>Roorkee Locality</strong><span>Civil Lines Area</span></div>
+  </div>
+  <div class="info-item">
+    <div class="info-icon-wrap"><i data-lucide="clock" class="icon-spin"></i></div>
+    <div class="info-text"><strong>Open Daily</strong><span>9 AM – 11 PM</span></div>
+  </div>
+  <div class="info-item">
+    <div class="info-icon-wrap"><i data-lucide="package" class="icon-wiggle"></i></div>
+    <div class="info-text"><strong>Free Packaging</strong><span>Zero extra charges</span></div>
+  </div>
+  <div class="info-item">
+    <div class="info-icon-wrap"><i data-lucide="heart" class="icon-heartbeat"></i></div>
+    <div class="info-text"><strong>Frequently Reordered</strong><span>Trusted by thousands</span></div>
+  </div>
+</div>
+
+<!-- ─── 33 ANIMATED ICONS SHOWCASE ─── -->
+<section class="icons-showcase" id="icons">
+  <div class="section-header fade-in">
+    <div class="section-tag"><i data-lucide="sparkles" class="icon-sparkle" style="width:1rem;height:1rem;vertical-align:-2px;margin-right:0.3rem;"></i>Our Vibe</div>
+    <h2>Everything We Love</h2>
+    <p>Every element of Milk Bar — in animated glory</p>
+  </div>
+  <div class="icons-grid fade-in">
+    <div class="icon-box"><i class="icon-bounce" data-lucide="pizza"></i><span>Pizza</span></div>
+    <div class="icon-box"><i class="icon-wiggle" data-lucide="croissant"></i><span>Bakery</span></div>
+    <div class="icon-box"><i class="icon-float" data-lucide="cake"></i><span>Cakes</span></div>
+    <div class="icon-box"><i class="icon-heartbeat" data-lucide="candy"></i><span>Sweets</span></div>
+    <div class="icon-box"><i class="icon-spin" data-lucide="cup-soda"></i><span>Drinks</span></div>
+    <div class="icon-box"><i class="icon-pulse" data-lucide="soup"></i><span>Noodles</span></div>
+    <div class="icon-box"><i class="icon-bounce" data-lucide="salad"></i><span>Snacks</span></div>
+    <div class="icon-box"><i class="icon-glow" data-lucide="star" style="fill:currentColor;"></i><span>4.2 Rating</span></div>
+    <div class="icon-box"><i class="icon-wiggle" data-lucide="utensils"></i><span>Curry</span></div>
+    <div class="icon-box"><i class="icon-float" data-lucide="wheat"></i><span>Breads</span></div>
+    <div class="icon-box"><i class="icon-shake" data-lucide="flame"></i><span>Spicy</span></div>
+    <div class="icon-box"><i class="icon-bounce" data-lucide="cooking-pot"></i><span>Thali</span></div>
+    <div class="icon-box"><i class="icon-heartbeat" data-lucide="sprout"></i><span>Pure Veg</span></div>
+    <div class="icon-box"><i class="icon-pulse" data-lucide="leafy-green"></i><span>Rice</span></div>
+    <div class="icon-box"><i class="icon-sparkle" data-lucide="sparkles"></i><span>Special</span></div>
+    <div class="icon-box"><i class="icon-swing" data-lucide="egg"></i><span>Breakfast</span></div>
+    <div class="icon-box"><i class="icon-float" data-lucide="package"></i><span>Chinese</span></div>
+    <div class="icon-box"><i class="icon-wiggle" data-lucide="utensils-crossed"></i><span>Tandoori</span></div>
+    <div class="icon-box"><i class="icon-bounce" data-lucide="soup"></i><span>Soup</span></div>
+    <div class="icon-box"><i class="icon-spin" data-lucide="cookie"></i><span>Falafel</span></div>
+    <div class="icon-box"><i class="icon-glow" data-lucide="award"></i><span>Award</span></div>
+    <div class="icon-box"><i class="icon-heartbeat" data-lucide="party-popper"></i><span>Celebrate</span></div>
+    <div class="icon-box"><i class="icon-pulse" data-lucide="donut"></i><span>Momos</span></div>
+    <div class="icon-box"><i class="icon-shake" data-lucide="flame"></i><span>Hot Fresh</span></div>
+    <div class="icon-box"><i class="icon-float" data-lucide="cake-slice"></i><span>Cupcake</span></div>
+    <div class="icon-box"><i class="icon-bounce" data-lucide="coffee"></i><span>Coffee</span></div>
+    <div class="icon-box"><i class="icon-wiggle" data-lucide="ice-cream-cone"></i><span>Ice Cream</span></div>
+    <div class="icon-box"><i class="icon-sparkle" data-lucide="heart" style="fill:currentColor;"></i><span>Butter</span></div>
+    <div class="icon-box"><i class="icon-swing" data-lucide="sandwich"></i><span>Roll</span></div>
+    <div class="icon-box"><i class="icon-pulse" data-lucide="milk"></i><span>Cheese</span></div>
+    <div class="icon-box"><i class="icon-glow" data-lucide="star" style="fill:currentColor;"></i><span>Favourite</span></div>
+    <div class="icon-box"><i class="icon-heartbeat" data-lucide="milk"></i><span>Milk</span></div>
+    <div class="icon-box"><i class="icon-float" data-lucide="candy"></i><span>Chocolate</span></div>
+  </div>
+</section>
+
+<div class="gold-divider fade-in"><span>✦</span></div>
+
+<!-- ─── MENU ─── -->
+<section class="section" id="menu">
+  <div class="section-header fade-in">
+    <div class="section-tag"><i data-lucide="utensils-crossed" class="icon-bounce" style="width:1rem;height:1rem;vertical-align:-2px;margin-right:0.3rem;"></i>Our Menu</div>
+    <h2>Something For Every Mood</h2>
+    <p>200+ pure veg items across 15+ categories — made fresh every single day</p>
+  </div>
+  <div class="menu-grid">
+
+    <div class="menu-card fade-in" data-category="pizza">
+      <img class="menu-card-img" src="https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=500&h=220&fit=crop&auto=format" alt="Pizza"/>
+      <div class="menu-card-body">
+        <i class="menu-card-icon icon-bounce" data-lucide="pizza"></i>
+        <div class="menu-card-name">Pizza & Pasta</div>
+        <div class="menu-card-desc">Golden-crust veg pizzas, creamy pasta bakes & Italian delights</div>
+        <div class="menu-card-footer"><button class="menu-card-btn">View All →</button></div>
+      </div>
+    </div>
+
+    <div class="menu-card fade-in" data-category="pizza">
+      <img class="menu-card-img" src="https://images.unsplash.com/photo-1576158114254-3ba81558b87d?w=500&h=220&fit=crop&auto=format" alt="Snacks"/>
+      <div class="menu-card-body">
+        <i class="menu-card-icon icon-wiggle" data-lucide="salad"></i>
+        <div class="menu-card-name">Snacks</div>
+        <div class="menu-card-desc">Crispy samosas, pakoras, sandwiches & street-style bites</div>
+        <div class="menu-card-footer"><button class="menu-card-btn">View All →</button></div>
+      </div>
+    </div>
+
+    <div class="menu-card fade-in" data-category="bakery">
+      <img class="menu-card-img" src="https://images.unsplash.com/photo-1509440159596-0249088772ff?w=500&h=220&fit=crop&auto=format" alt="Bakery"/>
+      <div class="menu-card-body">
+        <i class="menu-card-icon icon-float" data-lucide="croissant"></i>
+        <div class="menu-card-name">Bakery</div>
+        <div class="menu-card-desc">Fresh-baked breads, croissants, muffins & pastries daily</div>
+        <div class="menu-card-footer"><button class="menu-card-btn">View All →</button></div>
+      </div>
+    </div>
+
+    <div class="menu-card fade-in" data-category="sweets">
+      <img class="menu-card-img" src="/sweets.png" alt="Sweets"/>
+      <div class="menu-card-body">
+        <i class="menu-card-icon icon-heartbeat" data-lucide="candy"></i>
+        <div class="menu-card-name">Sweets</div>
+        <div class="menu-card-desc">Gulab jamun, barfi, ladoo, jalebi & traditional mithais</div>
+        <div class="menu-card-footer"><button class="menu-card-btn">View All →</button></div>
+      </div>
+    </div>
+
+    <div class="menu-card fade-in" data-category="bakery">
+      <img class="menu-card-img" src="https://images.unsplash.com/photo-1544145945-f90425340c7e?w=500&h=220&fit=crop&auto=format" alt="Drinks"/>
+      <div class="menu-card-body">
+        <i class="menu-card-icon icon-spin" data-lucide="cup-soda"></i>
+        <div class="menu-card-name">Drinks & Beverages</div>
+        <div class="menu-card-desc">Lassi, milkshakes, fresh juices, cold coffee & more</div>
+        <div class="menu-card-footer"><button class="menu-card-btn">View All →</button></div>
+      </div>
+    </div>
+
+    <div class="menu-card fade-in" data-category="best">
+      <img class="menu-card-img" src="https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=500&h=220&fit=crop&auto=format" alt="Main Course"/>
+      <div class="menu-card-body">
+        <i class="menu-card-icon icon-pulse" data-lucide="cooking-pot"></i>
+        <div class="menu-card-name">Main Course</div>
+        <div class="menu-card-desc">Paneer curries, dal makhani, shahi korma & North Indian specials</div>
+        <div class="menu-card-footer"><button class="menu-card-btn">View All →</button></div>
+      </div>
+    </div>
+
+    <div class="menu-card fade-in" data-category="best">
+      <img class="menu-card-img" src="/thali.png" alt="Thali"/>
+      <div class="menu-card-body">
+        <i class="menu-card-icon icon-bounce" data-lucide="utensils"></i>
+        <div class="menu-card-name">Thali & Combos</div>
+        <div class="menu-card-desc">Complete meals with dal, sabzi, roti, rice, pickle & papad</div>
+        <div class="menu-card-footer"><button class="menu-card-btn">View All →</button></div>
+      </div>
+    </div>
+
+    <div class="menu-card fade-in" data-category="best">
+      <img class="menu-card-img" src="https://images.unsplash.com/photo-1547592166-23ac45744acd?w=500&h=220&fit=crop&auto=format" alt="Soup"/>
+      <div class="menu-card-body">
+        <i class="menu-card-icon icon-wiggle" data-lucide="soup"></i>
+        <div class="menu-card-name">Soups & Salad</div>
+        <div class="menu-card-desc">Hot soups, cream of mushroom, fresh garden salads</div>
+        <div class="menu-card-footer"><button class="menu-card-btn">View All →</button></div>
+      </div>
+    </div>
+
+    <div class="menu-card fade-in" data-category="best">
+      <img class="menu-card-img" src="https://images.unsplash.com/photo-1533089860892-a7c6f0a88666?w=500&h=220&fit=crop&auto=format" alt="Breakfast"/>
+      <div class="menu-card-body">
+        <i class="menu-card-icon icon-swing" data-lucide="egg"></i>
+        <div class="menu-card-name">Breakfast Specials</div>
+        <div class="menu-card-desc">Poha, upma, parathas, stuffed toast & morning favourites</div>
+        <div class="menu-card-footer"><button class="menu-card-btn">View All →</button></div>
+      </div>
+    </div>
+
+    <div class="menu-card fade-in" data-category="south">
+      <img class="menu-card-img" src="/dosa.png" alt="South Indian"/>
+      <div class="menu-card-body">
+        <i class="menu-card-icon icon-float" data-lucide="cooking-pot"></i>
+        <div class="menu-card-name">South Indian</div>
+        <div class="menu-card-desc">Crispy dosas, idli, vada, uttapam & coconut-infused delights</div>
+        <div class="menu-card-footer"><button class="menu-card-btn">View All →</button></div>
+      </div>
+    </div>
+
+    <div class="menu-card fade-in" data-category="pizza">
+      <img class="menu-card-img" src="https://images.unsplash.com/photo-1563245372-f21724e3856d?w=500&h=220&fit=crop&auto=format" alt="Chinese"/>
+      <div class="menu-card-body">
+        <i class="menu-card-icon icon-bounce" data-lucide="package"></i>
+        <div class="menu-card-name">Chinese</div>
+        <div class="menu-card-desc">Veg fried rice, hakka noodles, manchurian, spring rolls</div>
+        <div class="menu-card-footer"><button class="menu-card-btn">View All →</button></div>
+      </div>
+    </div>
+
+    <div class="menu-card fade-in" data-category="pizza">
+      <img class="menu-card-img" src="https://images.unsplash.com/photo-1603360946369-dc9bb6258143?w=500&h=220&fit=crop&auto=format" alt="Tandoori"/>
+      <div class="menu-card-body">
+        <i class="menu-card-icon icon-shake" data-lucide="flame"></i>
+        <div class="menu-card-name">Tandoori Appetizer</div>
+        <div class="menu-card-desc">Tandoori paneer, seekh kabab, malai tikka from the clay oven</div>
+        <div class="menu-card-footer"><button class="menu-card-btn">View All →</button></div>
+      </div>
+    </div>
+
+    <div class="menu-card fade-in" data-category="bakery">
+      <img class="menu-card-img" src="https://images.unsplash.com/photo-1556471013-0001958d2f12?w=500&h=220&fit=crop&auto=format" alt="Breads"/>
+      <div class="menu-card-body">
+        <i class="menu-card-icon icon-wiggle" data-lucide="wheat"></i>
+        <div class="menu-card-name">Milk Bar Breads</div>
+        <div class="menu-card-desc">Our signature pav, garlic bread, stuffed kulchas & more</div>
+        <div class="menu-card-footer"><button class="menu-card-btn">View All →</button></div>
+      </div>
+    </div>
+
+    <div class="menu-card fade-in" data-category="best">
+      <img class="menu-card-img" src="https://images.unsplash.com/photo-1536304993881-ff86d42818e9?w=500&h=220&fit=crop&auto=format" alt="Rice"/>
+      <div class="menu-card-body">
+        <i class="menu-card-icon icon-pulse" data-lucide="leafy-green"></i>
+        <div class="menu-card-name">Rice & Pulao</div>
+        <div class="menu-card-desc">Veg biryani, jeera rice, kashmiri pulao, curd rice</div>
+        <div class="menu-card-footer"><button class="menu-card-btn">View All →</button></div>
+      </div>
+    </div>
+
+    <div class="menu-card fade-in" data-category="bakery">
+      <img class="menu-card-img" src="/cake.png" alt="Special Cakes"/>
+      <div class="menu-card-body">
+        <i class="menu-card-icon icon-float" data-lucide="cake"></i>
+        <div class="menu-card-name">Special Cakes</div>
+        <div class="menu-card-desc">Custom theme cakes, truffle, black forest & celebration cakes</div>
+        <div class="menu-card-footer"><button class="menu-card-btn">View All →</button></div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<div class="gold-divider fade-in"><span>✦</span></div>
+
+<!-- ─── DISHES MENU ─── -->
+<section class="section" id="dishes-menu">
+  <div class="section-header fade-in">
+    <div class="section-tag">🍲 Popular Dishes</div>
+    <h2>Our Favorites & Specials</h2>
+    <p>Freshly prepared items from our kitchen and bakery with authentic taste</p>
+  </div>
+
+  <div class="menu-tabs fade-in">
+    <button class="tab-btn active" data-category="best">🔥 Best Sellers</button>
+    <button class="tab-btn" data-category="pizza">🍕 Pizzas & Snacks</button>
+    <button class="tab-btn" data-category="bakery">🍰 Cakes & Bakery</button>
+    <button class="tab-btn" data-category="sweets">🍬 Sweets</button>
+    <button class="tab-btn" data-category="south">🍜 South Indian</button>
+  </div>
+
+  <div class="dish-grid fade-in">
+    <!-- Best Sellers -->
+    <div class="dish-card show" data-category="best" style="animation-delay: 0.1s;">
+      <div class="dish-img-wrap">
+        <div class="dish-veg-badge"><div class="dish-veg-dot"></div></div>
+        <img class="dish-img" src="/cake.png" alt="Chocolate Truffle Cake"/>
+      </div>
+      <div class="dish-body">
+        <div class="dish-name">Special Chocolate Truffle Cake</div>
+        <div class="dish-desc">Rich Belgian chocolate ganache layers with moist sponge. Our signature seller.</div>
+        <div class="dish-footer">
+          <span class="dish-price">₹450</span>
+          <button class="dish-btn">Add to Cart</button>
+        </div>
+      </div>
+    </div>
+    
+    <div class="dish-card show" data-category="best" style="animation-delay: 0.2s;">
+      <div class="dish-img-wrap">
+        <div class="dish-veg-badge"><div class="dish-veg-dot"></div></div>
+        <img class="dish-img" src="/dosa.png" alt="Masala Dosa"/>
+      </div>
+      <div class="dish-body">
+        <div class="dish-name">Special Butter Masala Dosa</div>
+        <div class="dish-desc">Crispy rice crepe served with spiced potato filling, sambar and fresh coconut chutney.</div>
+        <div class="dish-footer">
+          <span class="dish-price">₹140</span>
+          <button class="dish-btn">Add to Cart</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="dish-card show" data-category="best" style="animation-delay: 0.3s;">
+      <div class="dish-img-wrap">
+        <div class="dish-veg-badge"><div class="dish-veg-dot"></div></div>
+        <img class="dish-img" src="https://images.unsplash.com/photo-1541167760496-1628856ab772?w=400&h=240&fit=crop&auto=format" alt="Cold Coffee"/>
+      </div>
+      <div class="dish-body">
+        <div class="dish-name">Milk Bar Special Cold Coffee</div>
+        <div class="dish-desc">Creamy, rich ice-blended signature cold coffee topped with chocolate powder.</div>
+        <div class="dish-footer">
+          <span class="dish-price">₹90</span>
+          <button class="dish-btn">Add to Cart</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="dish-card show" data-category="best" style="animation-delay: 0.4s;">
+      <div class="dish-img-wrap">
+        <div class="dish-veg-badge"><div class="dish-veg-dot"></div></div>
+        <img class="dish-img" src="/thali.png" alt="Dal Makhani Special"/>
+      </div>
+      <div class="dish-body">
+        <div class="dish-name">Special Dal Makhani Combo</div>
+        <div class="dish-desc">Creamy black lentils simmered overnight, served with hot naan and salad.</div>
+        <div class="dish-footer">
+          <span class="dish-price">₹190</span>
+          <button class="dish-btn">Add to Cart</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Pizza & Snacks -->
+    <div class="dish-card" data-category="pizza">
+      <div class="dish-img-wrap">
+        <div class="dish-veg-badge"><div class="dish-veg-dot"></div></div>
+        <img class="dish-img" src="/pizza.png" alt="Paneer Delight Pizza"/>
+      </div>
+      <div class="dish-body">
+        <div class="dish-name">Paneer Delight Pizza</div>
+        <div class="dish-desc">Loaded with fresh soft paneer cubes, capsicum, gold corn, onion, and mozzarella.</div>
+        <div class="dish-footer">
+          <span class="dish-price">₹260</span>
+          <button class="dish-btn">Add to Cart</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="dish-card" data-category="pizza">
+      <div class="dish-img-wrap">
+        <div class="dish-veg-badge"><div class="dish-veg-dot"></div></div>
+        <img class="dish-img" src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=400&h=240&fit=crop&auto=format" alt="French Burger"/>
+      </div>
+      <div class="dish-body">
+        <div class="dish-name">Loaded French Burger</div>
+        <div class="dish-desc">Spiced potato and veg patty burger with special house dressing and cheese.</div>
+        <div class="dish-footer">
+          <span class="dish-price">₹110</span>
+          <button class="dish-btn">Add to Cart</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="dish-card" data-category="pizza">
+      <div class="dish-img-wrap">
+        <div class="dish-veg-badge"><div class="dish-veg-dot"></div></div>
+        <img class="dish-img" src="https://images.unsplash.com/photo-1513104890138-7c749659a591?w=400&h=240&fit=crop&auto=format" alt="Cheese Margherita"/>
+      </div>
+      <div class="dish-body">
+        <div class="dish-name">Double Cheese Margherita Pizza</div>
+        <div class="dish-desc">Extra cheese layer on our signature crust with fresh tomato basil sauce.</div>
+        <div class="dish-footer">
+          <span class="dish-price">₹210</span>
+          <button class="dish-btn">Add to Cart</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bakery & Cakes -->
+    <div class="dish-card" data-category="bakery">
+      <div class="dish-img-wrap">
+        <div class="dish-veg-badge"><div class="dish-veg-dot"></div></div>
+        <img class="dish-img" src="/cake.png" alt="Chocolate Truffle Cake"/>
+      </div>
+      <div class="dish-body">
+        <div class="dish-name">Chocolate Truffle Cake</div>
+        <div class="dish-desc">Belgian chocolate ganache layers with moist sponge. Absolute favorite.</div>
+        <div class="dish-footer">
+          <span class="dish-price">₹450</span>
+          <button class="dish-btn">Add to Cart</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="dish-card" data-category="bakery">
+      <div class="dish-img-wrap">
+        <div class="dish-veg-badge"><div class="dish-veg-dot"></div></div>
+        <img class="dish-img" src="https://images.unsplash.com/photo-1616541823729-00fe0aacd32c?w=400&h=240&fit=crop&auto=format" alt="Red Velvet Cake"/>
+      </div>
+      <div class="dish-body">
+        <div class="dish-name">Premium Red Velvet Cake</div>
+        <div class="dish-desc">Rich red velvet layers with cream cheese frosting and white chocolate details.</div>
+        <div class="dish-footer">
+          <span class="dish-price">₹490</span>
+          <button class="dish-btn">Add to Cart</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="dish-card" data-category="bakery">
+      <div class="dish-img-wrap">
+        <div class="dish-veg-badge"><div class="dish-veg-dot"></div></div>
+        <img class="dish-img" src="https://images.unsplash.com/photo-1572490122747-3968b75cc699?w=400&h=240&fit=crop&auto=format" alt="Chocolate Milkshake"/>
+      </div>
+      <div class="dish-body">
+        <div class="dish-name">Oreo Chocolate Milkshake</div>
+        <div class="dish-desc">Creamy ice-cream shake blended with Oreos and rich chocolate syrup.</div>
+        <div class="dish-footer">
+          <span class="dish-price">₹120</span>
+          <button class="dish-btn">Add to Cart</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sweets -->
+    <div class="dish-card" data-category="sweets">
+      <div class="dish-img-wrap">
+        <div class="dish-veg-badge"><div class="dish-veg-dot"></div></div>
+        <img class="dish-img" src="/sweets.png" alt="Kaju Katli"/>
+      </div>
+      <div class="dish-body">
+        <div class="dish-name">Premium Kaju Katli Box</div>
+        <div class="dish-desc">Made from selected cashews and pure silver vark. Melt-in-mouth texture.</div>
+        <div class="dish-footer">
+          <span class="dish-price">₹350</span>
+          <button class="dish-btn">Add to Cart</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="dish-card" data-category="sweets">
+      <div class="dish-img-wrap">
+        <div class="dish-veg-badge"><div class="dish-veg-dot"></div></div>
+        <img class="dish-img" src="https://images.unsplash.com/photo-1589301760014-d929f3979dbc?w=400&h=240&fit=crop&auto=format" alt="Gulab Jamun"/>
+      </div>
+      <div class="dish-body">
+        <div class="dish-name">Hot Gulab Jamun (4 pcs)</div>
+        <div class="dish-desc">Soft, golden berry-sized balls made of milk solids, soaked in hot sugar syrup.</div>
+        <div class="dish-footer">
+          <span class="dish-price">₹90</span>
+          <button class="dish-btn">Add to Cart</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- South Indian -->
+    <div class="dish-card" data-category="south">
+      <div class="dish-img-wrap">
+        <div class="dish-veg-badge"><div class="dish-veg-dot"></div></div>
+        <img class="dish-img" src="/dosa.png" alt="Masala Dosa"/>
+      </div>
+      <div class="dish-body">
+        <div class="dish-name">Special Butter Masala Dosa</div>
+        <div class="dish-desc">Crispy rice crepe served with spiced potato filling, sambar and fresh coconut chutney.</div>
+        <div class="dish-footer">
+          <span class="dish-price">₹140</span>
+          <button class="dish-btn">Add to Cart</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="dish-card" data-category="south">
+      <div class="dish-img-wrap">
+        <div class="dish-veg-badge"><div class="dish-veg-dot"></div></div>
+        <img class="dish-img" src="https://images.unsplash.com/photo-1668236543090-82eba5ee5976?w=400&h=240&fit=crop&auto=format" alt="Rava Dosa"/>
+      </div>
+      <div class="dish-body">
+        <div class="dish-name">Onion Rava Masala Dosa</div>
+        <div class="dish-desc">Crispy semolina crepe with chopped onion, coriander and spiced potato filling.</div>
+        <div class="dish-footer">
+          <span class="dish-price">₹155</span>
+          <button class="dish-btn">Add to Cart</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="gold-divider fade-in"><span>✦</span></div>
+
+<!-- ─── SPECIALS ─── -->
+<section class="section specials-section" id="specials">
+  <div class="section-header fade-in">
+    <div class="section-tag"><i data-lucide="award" class="icon-sparkle" style="width:1rem;height:1rem;vertical-align:-2px;margin-right:0.3rem;"></i>Must Try</div>
+    <h2>Chef's Specials</h2>
+    <p>Handpicked favourites loved by our regulars — you must try these!</p>
+  </div>
+  <div class="specials-grid fade-in">
+    <div class="special-big">
+      <img src="/cake.png" alt="Special Cake"/>
+      <div class="special-body">
+        <div class="special-badge"><i data-lucide="star" class="icon-glow" style="width:0.8rem;height:0.8rem;vertical-align:-1px;margin-right:0.25rem;fill:currentColor;"></i>Signature Item</div>
+        <div class="special-title">Chocolate Truffle Cake</div>
+        <div class="special-desc">Rich layers of chocolate sponge and silky ganache — our most celebrated creation. Perfect for every celebration.</div>
+      </div>
+    </div>
+    <div class="special-col">
+      <div class="special-sm">
+        <img src="/dosa.png" alt="Dosa"/>
+        <div class="special-sm-body">
+          <i class="special-sm-icon icon-float" data-lucide="cooking-pot"></i>
+          <h3>Masala Dosa</h3>
+          <p>Crispy golden dosa with spiced potato filling & chutneys</p>
+        </div>
+      </div>
+      <div class="special-sm">
+        <img src="/thali.png" alt="Thali"/>
+        <div class="special-sm-body">
+          <i class="special-sm-icon icon-bounce" data-lucide="utensils"></i>
+          <h3>Full Thali Combo</h3>
+          <p>Dal, 2 sabzis, rice, 2 rotis, salad, papad & pickle</p>
+        </div>
+      </div>
+      <div class="special-sm">
+        <img src="/pizza.png" alt="Pizza"/>
+        <div class="special-sm-body">
+          <i class="special-sm-icon icon-wiggle" data-lucide="pizza"></i>
+          <h3>Veg Loaded Pizza</h3>
+          <p>Golden crust loaded with fresh veggies & mozzarella</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="gold-divider fade-in"><span>✦</span></div>
+
+<!-- ─── INSTAGRAM GALLERY ─── -->
+<section class="insta-section" id="gallery">
+  <div class="section-header fade-in">
+    <div class="section-tag"><i data-lucide="instagram" class="icon-wiggle" style="width:1rem;height:1rem;vertical-align:-2px;margin-right:0.3rem;"></i>Instagram</div>
+    <h2>Follow Our Journey</h2>
+    <p>Fresh posts daily · <a href="https://www.instagram.com/milkbar.in?igsh=YnF3NW05cGRjYmVl" target="_blank" style="color:var(--gold-light)">@milkbar.in</a></p>
+  </div>
+  <div class="insta-grid fade-in">
+    <div class="insta-item">
+      <img src="/cake.png" alt="Instagram post"/>
+      <div class="insta-overlay"><i data-lucide="heart" class="icon-heartbeat" style="fill:currentColor; width:1.5rem; height:1.5rem; margin-bottom: 0.3rem;"></i><span>Special Cakes</span></div>
+    </div>
+    <div class="insta-item">
+      <img src="/pizza.png" alt="Pizza post"/>
+      <div class="insta-overlay"><i data-lucide="heart" class="icon-heartbeat" style="fill:currentColor; width:1.5rem; height:1.5rem; margin-bottom: 0.3rem;"></i><span>Pizza Specials</span></div>
+    </div>
+    <div class="insta-item">
+      <img src="/sweets.png" alt="Sweets post"/>
+      <div class="insta-overlay"><i data-lucide="heart" class="icon-heartbeat" style="fill:currentColor; width:1.5rem; height:1.5rem; margin-bottom: 0.3rem;"></i><span>Fresh Sweets</span></div>
+    </div>
+    <div class="insta-item">
+      <img src="/dosa.png" alt="Dosa post"/>
+      <div class="insta-overlay"><i data-lucide="heart" class="icon-heartbeat" style="fill:currentColor; width:1.5rem; height:1.5rem; margin-bottom: 0.3rem;"></i><span>South Indian</span></div>
+    </div>
+    <div class="insta-item">
+      <img src="/thali.png" alt="Thali post"/>
+      <div class="insta-overlay"><i data-lucide="heart" class="icon-heartbeat" style="fill:currentColor; width:1.5rem; height:1.5rem; margin-bottom: 0.3rem;"></i><span>Thali Combos</span></div>
+    </div>
+    <div class="insta-item">
+      <img src="/hero.png" alt="Food spread"/>
+      <div class="insta-overlay"><i data-lucide="heart" class="icon-heartbeat" style="fill:currentColor; width:1.5rem; height:1.5rem; margin-bottom: 0.3rem;"></i><span>Full Spread</span></div>
+    </div>
+  </div>
+  <div style="text-align:center;margin-top:2rem">
+    <a href="https://www.instagram.com/milkbar.in?igsh=YnF3NW05cGRjYmVl" target="_blank" class="insta-cta">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="white"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+      View All Posts on Instagram
+    </a>
+  </div>
+</section>
+
+<div class="gold-divider fade-in"><span>✦</span></div>
+
+<!-- ─── WHY US ─── -->
+<section class="why-section">
+  <div class="section-header fade-in">
+    <div class="section-tag"><i data-lucide="heart" class="icon-pulse" style="width:1rem;height:1rem;vertical-align:-2px;margin-right:0.3rem;fill:currentColor;"></i>Why Milk Bar</div>
+    <h2>Why Roorkee Loves Us</h2>
+  </div>
+  <div class="why-grid fade-in">
+    <div class="why-card">
+      <i class="why-icon icon-glow" data-lucide="sprout"></i>
+      <div class="why-title">100% Pure Vegetarian</div>
+      <div class="why-text">Every item on our menu is certified pure veg. No compromise, ever.</div>
+    </div>
+    <div class="why-card">
+      <i class="why-icon icon-heartbeat" data-lucide="heart" style="fill:currentColor;"></i>
+      <div class="why-title">Made With Love</div>
+      <div class="why-text">Each dish is crafted fresh daily with the finest ingredients and a personal touch.</div>
+    </div>
+    <div class="why-card">
+      <i class="why-icon icon-bounce" data-lucide="package"></i>
+      <div class="why-title">No Packaging Charges</div>
+      <div class="why-text">What you see is what you pay. Zero hidden packaging fees.</div>
+    </div>
+    <div class="why-card">
+      <i class="why-icon icon-spin" data-lucide="star" style="fill:currentColor;"></i>
+      <div class="why-title">4.2★ Rated</div>
+      <div class="why-text">39,800+ genuine reviews from our loyal customers across Roorkee.</div>
+    </div>
+    <div class="why-card">
+      <i class="why-icon icon-wiggle" data-lucide="cake"></i>
+      <div class="why-title">Custom Cakes</div>
+      <div class="why-text">Personalized celebration cakes for birthdays, anniversaries & events.</div>
+    </div>
+    <div class="why-card">
+      <i class="why-icon icon-float" data-lucide="rotate-ccw"></i>
+      <div class="why-title">Frequently Reordered</div>
+      <div class="why-text">Once you try us, you keep coming back. That's the Milk Bar promise.</div>
+    </div>
+  </div>
+</section>
+
+<div class="gold-divider fade-in"><span>✦</span></div>
+
+<!-- ─── REVIEWS ─── -->
+<section class="reviews-section" id="reviews">
+  <div class="section-header fade-in">
+    <div class="section-tag"><i data-lucide="message-square" class="icon-pulse" style="width:1rem;height:1rem;vertical-align:-2px;margin-right:0.3rem;"></i>Reviews</div>
+    <h2>What People Are Saying</h2>
+    <p>39,800+ happy reviews and counting</p>
+  </div>
+  <div class="reviews-grid fade-in">
+    <div class="review-card">
+      <div class="review-stars">
+        <i data-lucide="star" style="fill:currentColor; width:1.1rem; height:1.1rem;"></i>
+        <i data-lucide="star" style="fill:currentColor; width:1.1rem; height:1.1rem;"></i>
+        <i data-lucide="star" style="fill:currentColor; width:1.1rem; height:1.1rem;"></i>
+        <i data-lucide="star" style="fill:currentColor; width:1.1rem; height:1.1rem;"></i>
+        <i data-lucide="star" style="fill:currentColor; width:1.1rem; height:1.1rem;"></i>
+      </div>
+      <div class="review-text">"Best pure veg food in Roorkee! The South Indian section is absolutely amazing. Dosa comes out perfectly crispy every single time. Highly recommended!"</div>
+      <div class="review-author">
+        <div class="review-avatar">R</div>
+        <div><div class="review-name">Rahul Sharma</div><div class="review-via">via Swiggy</div></div>
+      </div>
+    </div>
+    <div class="review-card">
+      <div class="review-stars">
+        <i data-lucide="star" style="fill:currentColor; width:1.1rem; height:1.1rem;"></i>
+        <i data-lucide="star" style="fill:currentColor; width:1.1rem; height:1.1rem;"></i>
+        <i data-lucide="star" style="fill:currentColor; width:1.1rem; height:1.1rem;"></i>
+        <i data-lucide="star" style="fill:currentColor; width:1.1rem; height:1.1rem;"></i>
+        <i data-lucide="star" style="fill:currentColor; width:1.1rem; height:1.1rem;"></i>
+      </div>
+      <div class="review-text">"Their pizza is honestly better than the popular chains. And the packaging is always neat with zero extra charges. This is my go-to place now!"</div>
+      <div class="review-author">
+        <div class="review-avatar">P</div>
+        <div><div class="review-name">Priya Gupta</div><div class="review-via">via Zomato</div></div>
+      </div>
+    </div>
+    <div class="review-card">
+      <div class="review-stars">
+        <i data-lucide="star" style="fill:currentColor; width:1.1rem; height:1.1rem;"></i>
+        <i data-lucide="star" style="fill:currentColor; width:1.1rem; height:1.1rem;"></i>
+        <i data-lucide="star" style="fill:currentColor; width:1.1rem; height:1.1rem;"></i>
+        <i data-lucide="star" style="fill:currentColor; width:1.1rem; height:1.1rem;"></i>
+        <i data-lucide="star" style="width:1.1rem; height:1.1rem; opacity:0.3;"></i>
+      </div>
+      <div class="review-text">"Ordered the thali combo — absolutely value for money. Dal, sabzi, roti, rice, papad all perfectly done. Will definitely order again!"</div>
+      <div class="review-author">
+        <div class="review-avatar">A</div>
+        <div><div class="review-name">Amit Verma</div><div class="review-via">via Swiggy</div></div>
+      </div>
+    </div>
+    <div class="review-card">
+      <div class="review-stars">
+        <i data-lucide="star" style="fill:currentColor; width:1.1rem; height:1.1rem;"></i>
+        <i data-lucide="star" style="fill:currentColor; width:1.1rem; height:1.1rem;"></i>
+        <i data-lucide="star" style="fill:currentColor; width:1.1rem; height:1.1rem;"></i>
+        <i data-lucide="star" style="fill:currentColor; width:1.1rem; height:1.1rem;"></i>
+        <i data-lucide="star" style="fill:currentColor; width:1.1rem; height:1.1rem;"></i>
+      </div>
+      <div class="review-text">"The cake they made for my daughter's birthday was absolutely gorgeous and delicious! Custom design, perfect taste. Milk Bar is the best in town!"</div>
+      <div class="review-author">
+        <div class="review-avatar">S</div>
+        <div><div class="review-name">Sunita Agarwal</div><div class="review-via">via Instagram DM</div></div>
+      </div>
+    </div>
+    <div class="review-card">
+      <div class="review-stars">
+        <i data-lucide="star" style="fill:currentColor; width:1.1rem; height:1.1rem;"></i>
+        <i data-lucide="star" style="fill:currentColor; width:1.1rem; height:1.1rem;"></i>
+        <i data-lucide="star" style="fill:currentColor; width:1.1rem; height:1.1rem;"></i>
+        <i data-lucide="star" style="fill:currentColor; width:1.1rem; height:1.1rem;"></i>
+        <i data-lucide="star" style="fill:currentColor; width:1.1rem; height:1.1rem;"></i>
+      </div>
+      <div class="review-text">"Chinese menu is surprisingly authentic! Manchurian and fried rice combo is my family's weekend staple. Great value, great taste!"</div>
+      <div class="review-author">
+        <div class="review-avatar">V</div>
+        <div><div class="review-name">Vikram Singh</div><div class="review-via">via Zomato</div></div>
+      </div>
+    </div>
+    <div class="review-card">
+      <div class="review-stars">
+        <i data-lucide="star" style="fill:currentColor; width:1.1rem; height:1.1rem;"></i>
+        <i data-lucide="star" style="fill:currentColor; width:1.1rem; height:1.1rem;"></i>
+        <i data-lucide="star" style="fill:currentColor; width:1.1rem; height:1.1rem;"></i>
+        <i data-lucide="star" style="fill:currentColor; width:1.1rem; height:1.1rem;"></i>
+        <i data-lucide="star" style="fill:currentColor; width:1.1rem; height:1.1rem;"></i>
+      </div>
+      <div class="review-text">"Bakery items are fresh and amazing every morning. The croissants and garlic bread are must-tries. Love that it's all pure veg!"</div>
+      <div class="review-author">
+        <div class="review-avatar">N</div>
+        <div><div class="review-name">Neha Joshi</div><div class="review-via">via Google</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── FOOTER ─── -->
+<footer>
+  <div class="foot-top">
+    <div class="foot-brand">
+      <span class="foot-logo">Milk Bar</span>
+      <p>Roorkee's favourite pure vegetarian restaurant & bakery. Serving love in every bite since day one. Come visit us or order online — we're always happy to serve you!</p>
+      <div class="foot-social">
+        <a href="https://www.instagram.com/milkbar.in?igsh=YnF3NW05cGRjYmVl" target="_blank" class="social-btn insta" title="Instagram">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="white"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+        </a>
+        <a href="https://www.zomato.com" target="_blank" class="social-btn zomato" title="Zomato">
+          <i data-lucide="utensils-crossed" style="color:white; width: 18px; height: 18px;"></i>
+        </a>
+        <a href="https://www.swiggy.com" target="_blank" class="social-btn swiggy" title="Swiggy">
+          <i data-lucide="bike" style="color:white; width: 18px; height: 18px;"></i>
+        </a>
+      </div>
+    </div>
+    <div class="foot-col">
+      <h4>Menu</h4>
+      <ul>
+        <li><a href="#menu">Pizza & Pasta</a></li>
+        <li><a href="#menu">Bakery</a></li>
+        <li><a href="#menu">Sweets</a></li>
+        <li><a href="#menu">South Indian</a></li>
+        <li><a href="#menu">Chinese</a></li>
+        <li><a href="#menu">Thali & Combos</a></li>
+        <li><a href="#menu">Special Cakes</a></li>
+      </ul>
+    </div>
+    <div class="foot-col">
+      <h4>Connect</h4>
+      <ul>
+        <li><a href="https://www.instagram.com/milkbar.in?igsh=YnF3NW05cGRjYmVl" target="_blank">Instagram @milkbar.in</a></li>
+        <li><a href="#gallery">Photo Gallery</a></li>
+        <li><a href="#reviews">Customer Reviews</a></li>
+        <li><a href="#specials">Today's Specials</a></li>
+        <li><a href="#menu">Full Menu</a></li>
+      </ul>
+      <div style="margin-top:1.5rem">
+        <div style="font-size:0.8rem;color:rgba(255,248,220,0.4);margin-bottom:0.5rem">📍 Location</div>
+        <div style="font-size:0.9rem;color:var(--cream)">Roorkee Locality<br/>Civil Lines, Roorkee</div>
+      </div>
+    </div>
+  </div>
+  <div class="foot-bottom">
+    <p>© 2025 Milk Bar, Roorkee. All rights reserved. · 100% Pure Vegetarian</p>
+    <a href="https://www.instagram.com/milkbar.in?igsh=YnF3NW05cGRjYmVl" target="_blank" class="insta-cta">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="white"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+      Follow @milkbar.in
+    </a>
+  </div>
+</footer>
+
+<!-- THREE.JS GOLDEN PARTICLES -->
+<script>
+(function(){
+  const canvas = document.getElementById('bg-canvas');
+  const renderer = new THREE.WebGLRenderer({canvas, alpha:true, antialias:true});
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio,2));
+  renderer.setSize(window.innerWidth,window.innerHeight);
+
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(75,window.innerWidth/window.innerHeight,0.1,1000);
+  camera.position.z = 5;
+
+  // Golden particles
+  const count = 2000;
+  const positions = new Float32Array(count*3);
+  const colors = new Float32Array(count*3);
+  for(let i=0;i<count;i++){
+    positions[i*3]=(Math.random()-0.5)*30;
+    positions[i*3+1]=(Math.random()-0.5)*30;
+    positions[i*3+2]=(Math.random()-0.5)*30;
+    const t=Math.random();
+    if(t<0.6){
+      // Gold
+      colors[i*3]=0.788;colors[i*3+1]=0.659;colors[i*3+2]=0.298;
+    } else if(t<0.85){
+      // Bright gold
+      colors[i*3]=0.909;colors[i*3+1]=0.788;colors[i*3+2]=0.416;
+    } else {
+      // Cream white
+      colors[i*3]=1;colors[i*3+1]=0.972;colors[i*3+2]=0.925;
+    }
+  }
+  const geo=new THREE.BufferGeometry();
+  geo.setAttribute('position',new THREE.BufferAttribute(positions,3));
+  geo.setAttribute('color',new THREE.BufferAttribute(colors,3));
+  const mat=new THREE.PointsMaterial({size:0.05,vertexColors:true,transparent:true,opacity:0.55});
+  const particles=new THREE.Points(geo,mat);
+  scene.add(particles);
+
+  // Golden rings
+  const ring1=new THREE.Mesh(
+    new THREE.TorusGeometry(7,0.018,16,200),
+    new THREE.MeshBasicMaterial({color:0xC9A84C,transparent:true,opacity:0.12})
+  );
+  ring1.rotation.x=Math.PI/4;
+  scene.add(ring1);
+
+  const ring2=new THREE.Mesh(
+    new THREE.TorusGeometry(11,0.01,16,200),
+    new THREE.MeshBasicMaterial({color:0xE8C96A,transparent:true,opacity:0.07})
+  );
+  ring2.rotation.x=-Math.PI/5;
+  ring2.rotation.y=Math.PI/4;
+  scene.add(ring2);
+
+  const ring3=new THREE.Mesh(
+    new THREE.TorusGeometry(5,0.02,16,200),
+    new THREE.MeshBasicMaterial({color:0xFDF4DC,transparent:true,opacity:0.06})
+  );
+  ring3.rotation.y=Math.PI/3;
+  scene.add(ring3);
+
+  let mouseX=0,mouseY=0;
+  document.addEventListener('mousemove',(e)=>{
+    mouseX=(e.clientX/window.innerWidth-0.5)*2;
+    mouseY=-(e.clientY/window.innerHeight-0.5)*2;
+  });
+
+  window.addEventListener('resize',()=>{
+    renderer.setSize(window.innerWidth,window.innerHeight);
+    camera.aspect=window.innerWidth/window.innerHeight;
+    camera.updateProjectionMatrix();
+  });
+
+  let st=Date.now();
+  function animate(){
+    requestAnimationFrame(animate);
+    const t=(Date.now()-st)/1000;
+    particles.rotation.y=t*0.03;
+    particles.rotation.x=t*0.015;
+    ring1.rotation.z=t*0.08;
+    ring2.rotation.z=-t*0.05;
+    ring3.rotation.y=t*0.12;
+    camera.position.x+=(mouseX*0.4-camera.position.x)*0.04;
+    camera.position.y+=(mouseY*0.4-camera.position.y)*0.04;
+    renderer.render(scene,camera);
+  }
+  animate();
+})();
+
+// Scroll fade-in
+const obs=new IntersectionObserver((entries)=>{
+  entries.forEach(el=>{if(el.isIntersecting)el.target.classList.add('visible')});
+},{threshold:0.08});
+document.querySelectorAll('.fade-in').forEach(el=>obs.observe(el));
+
+// 3D tilt on cards
+document.querySelectorAll('.menu-card,.special-big,.special-sm,.why-card,.review-card,.icon-box,.dish-card').forEach(card=>{
+  card.addEventListener('mousemove',(e)=>{
+    const r=card.getBoundingClientRect();
+    const x=(e.clientX-r.left)/r.width-0.5;
+    const y=(e.clientY-r.top)/r.height-0.5;
+    card.style.transform=`perspective(800px) rotateY(${x*10}deg) rotateX(${-y*10}deg) translateY(-10px)`;
+  });
+  card.addEventListener('mouseleave',()=>{card.style.transform='';});
+});
+
+// Tab switching logic for Popular Dishes
+const tabBtns = document.querySelectorAll('.tab-btn');
+const dishCards = document.querySelectorAll('.dish-card');
+
+function selectTab(category) {
+  tabBtns.forEach(btn => {
+    if(btn.dataset.category === category) {
+      btn.classList.add('active');
+    } else {
+      btn.classList.remove('active');
+    }
+  });
+
+  dishCards.forEach(card => {
+    if(category === 'all' || card.dataset.category === category) {
+      card.classList.add('show');
+    } else {
+      card.classList.remove('show');
+    }
+  });
+}
+
+tabBtns.forEach(btn => {
+  btn.addEventListener('click', () => {
+    selectTab(btn.dataset.category);
+  });
+});
+
+// Initialize with Best Sellers tab active
+selectTab('best');
+
+// Category card click behavior to filter and scroll to dishes section
+document.querySelectorAll('.menu-card').forEach(card => {
+  card.addEventListener('click', () => {
+    const cat = card.dataset.category;
+    document.querySelector('#dishes-menu').scrollIntoView({ behavior: 'smooth' });
+    selectTab(cat);
+  });
+});
+
+// Active state for Mobile Bottom Nav on scroll
+const sections = document.querySelectorAll('section[id]');
+const mobLinks = document.querySelectorAll('.mobile-nav-link');
+window.addEventListener('scroll', () => {
+  let current = "";
+  sections.forEach(section => {
+    const sectionTop = section.offsetTop;
+    const sectionHeight = section.clientHeight;
+    if (window.pageYOffset >= (sectionTop - sectionHeight / 3)) {
+      current = section.getAttribute('id');
+    }
+  });
+
+  mobLinks.forEach(link => {
+    link.classList.remove('active');
+    if (link.getAttribute('href') === `#${current}`) {
+      link.classList.add('active');
+    }
+  });
+});
+
+// Initialize Lucide SVG Icons
+lucide.createIcons();
+</script>
+</body>
+</html>
